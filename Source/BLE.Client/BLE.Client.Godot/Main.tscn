@@ -1,0 +1,43 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://Main.tres" type="Theme" id=1]
+[ext_resource path="res://Main.cs" type="Script" id=2]
+
+[node name="Node2D" type="Node2D"]
+script = ExtResource( 2 )
+
+[node name="Panel" type="Panel" parent="."]
+margin_right = 1920.0
+margin_bottom = 1200.0
+
+[node name="Label" type="Label" parent="Panel"]
+margin_right = 1920.0
+margin_bottom = 42.0
+theme = ExtResource( 1 )
+text = "Android BLE Scanner"
+align = 1
+
+[node name="checkScan" type="CheckButton" parent="Panel"]
+margin_left = 1755.0
+margin_top = -6.0
+margin_right = 1831.0
+margin_bottom = 34.0
+
+[node name="Button" type="Button" parent="Panel"]
+margin_left = 1684.0
+margin_top = 14.0
+margin_right = 1728.0
+margin_bottom = 34.0
+text = "Clear"
+
+[node name="listBLEItems" type="ItemList" parent="Panel"]
+margin_left = 38.0
+margin_top = 91.0
+margin_right = 1884.0
+margin_bottom = 1161.0
+max_columns = 4
+same_column_width = true
+
+[connection signal="toggled" from="Panel/checkScan" to="." method="ScanButtonToggled"]
+[connection signal="pressed" from="Panel/Button" to="." method="ClearPressed"]
+[connection signal="item_selected" from="Panel/listBLEItems" to="." method="_on_listBLEItems_item_selected"]
