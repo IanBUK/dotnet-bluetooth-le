@@ -55,7 +55,10 @@ namespace BLEScan
                 else
                 {
                     _isScanning = true;
-                    /*await*/ _link.StartScan();
+                    Main.sendDebugMessage("about to call StartScan");
+                    /*await*/
+                    _link.StartScan();
+                    Main.sendDebugMessage("back from call to StartScan");
                 }
             }
         }

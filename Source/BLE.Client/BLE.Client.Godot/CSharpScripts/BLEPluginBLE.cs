@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Godot;
 using Plugin.BLE;
+using Plugin.BLE.Abstractions;
 using Plugin.BLE.Abstractions.Contracts;
 using Plugin.BLE.Abstractions.EventArgs;
 using Plugin.BLE.Abstractions.Extensions;
@@ -69,31 +70,79 @@ namespace BLEScan
             }
         }
 
+
+        private string _lockAlreadyScanning = string.Empty;
+
+        private bool AlreadyScanning
+        {
+            get
+            {
+                lock(_lockAlreadyScanning)
+                {
+                    return IsScanning;
+                }
+            }
+        }
+
+        private void SetScanning(bool isScanning)
+        {
+            lock (_lockAlreadyScanning)
+            {
+                IsScanning = IsScanning;
+            }
+        }
+
+
         public override async Task<int> StartScan()
         {
-            DebugMessage("into StartScanForDevices");
+            if (AlreadyScanning)
+            {
+                DebugMessage("duplicate scanning call");
+            }
+            else
+            { 
+                SetScanning(true);
+                DebugMessage("into StartScanForDevices");
 
-            DebugMessage("StartScanForDevices called");
-            BLEDevices.Clear();
-            DebugMessage("await UpdateConnectedDevices();");
-            await UpdateConnectedDevices();
-            DebugMessage("_scanCancellationTokenSource = new CancellationTokenSource();");
-            _scanCancellationTokenSource = new CancellationTokenSource();
-            Adapter.ScanMode = ScanMode.LowLatency;
+                DebugMessage("StartScanForDevices called");
+                BLEDevices.Clear();
+                DebugMessage("await UpdateConnectedDevices();");
+                //UpdateConnectedDevices();
+                DebugMessage("_scanCancellationTokenSource = new CancellationTokenSource();");
+                _scanCancellationTokenSource = new CancellationTokenSource();
+                DebugMessage("got cancellation token");
+                try
+                {
+                    if (Adapter == null)
+                    {
+                        DebugMessage("Adapter is null!");
+                    }
+                    Adapter.ScanMode = ScanMode.LowLatency;
+                }
+                catch (Exception e)
+                {
+                    DebugMessage($"exception setting scanMode: '{e.Message}'");
+                }
+                DebugMessage("set scanMode to lowLatency");
+                Adapter.DeviceDiscovered -= OnDeviceDiscovered;
+                Adapter.DeviceAdvertised -= OnDeviceDiscovered;
+                Adapter.ScanTimeoutElapsed -= Adapter_ScanTimeoutElapsed;
 
-            Adapter.DeviceDiscovered -= OnDeviceDiscovered;
-            Adapter.DeviceAdvertised -= OnDeviceDiscovered;
-            Adapter.ScanTimeoutElapsed -= Adapter_ScanTimeoutElapsed;
+                Adapter.DeviceDiscovered += OnDeviceDiscovered;
+                Adapter.DeviceAdvertised += OnDeviceDiscovered;
+                Adapter.ScanTimeoutElapsed += Adapter_ScanTimeoutElapsed;
+                DebugMessage("event handlers refreshed");
 
-            Adapter.DeviceDiscovered += OnDeviceDiscovered;
-            Adapter.DeviceAdvertised += OnDeviceDiscovered;
-            Adapter.ScanTimeoutElapsed += Adapter_ScanTimeoutElapsed;
-            Adapter.ScanMode = ScanMode.LowLatency;
+                //Adapter.ScanMode = ScanMode.LowLatency;
 
-            DebugMessage("call Adapter.StartScanningForDevicesAsync");
-            await Adapter.StartScanningForDevicesAsync(_scanCancellationTokenSource.Token);
-            DebugMessage("back from Adapter.StartScanningForDevicesAsync");
+                DebugMessage("call Adapter.StartScanningForDevicesAsync");
+                
+                var scanTask = Adapter.StartScanningForDevicesAsync(_scanCancellationTokenSource.Token);
+                scanTask.Start();
 
+                DebugMessage("back from Adapter.StartScanningForDevicesAsync");
+                SetScanning(false);
+            }
             return 0;
         }
 
@@ -101,7 +150,7 @@ namespace BLEScan
 
         private void DebugMessage(string message)
         {
-            Debug.WriteLine(message);
+            //Debug.WriteLine(message);
             GD.Print(message);
         }
 

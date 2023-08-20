@@ -14,9 +14,18 @@ config/name="BleClientGodot"
 run/main_scene="res://Main.tscn"
 config/icon="res://icon.png"
 
+[display]
+
+window/dpi/allow_hidpi=true
+
+[global]
+
+dpi=false
+
 [gui]
 
 common/drop_mouse_on_gui_input_disabled=true
+theme/use_hidpi=true
 
 [mono]
 
