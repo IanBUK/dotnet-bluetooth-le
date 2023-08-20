@@ -1,0 +1,2247 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Plugin.BLE</name>
+    </assembly>
+    <members>
+        <member name="T:Plugin.BLE.Abstractions.AdapterBase">
+            <summary>
+            Base class for all platform-specific Adapter classes.
+            </summary>
+        </member>
+        <member name="E:Plugin.BLE.Abstractions.AdapterBase.DeviceAdvertised">
+            <summary>
+            Occurs when the adapter receives an advertisement.
+            </summary>
+        </member>
+        <member name="E:Plugin.BLE.Abstractions.AdapterBase.DeviceDiscovered">
+            <summary>
+            Occurs when the adapter receives an advertisement for the first time of the current scan run.
+            This means once per every <c>StartScanningForDevicesAsync</c> call.
+            </summary>
+        </member>
+        <member name="E:Plugin.BLE.Abstractions.AdapterBase.DeviceConnected">
+            <summary>
+            Occurs when a device has been connected.
+            </summary>
+        </member>
+        <member name="E:Plugin.BLE.Abstractions.AdapterBase.DeviceDisconnected">
+            <summary>
+            Occurs when a device has been disconnected. This occurs on intended disconnects after <see cref="M:Plugin.BLE.Abstractions.AdapterBase.DisconnectDeviceAsync(Plugin.BLE.Abstractions.Contracts.IDevice)"/>.
+            </summary>
+        </member>
+        <member name="E:Plugin.BLE.Abstractions.AdapterBase.DeviceConnectionLost">
+            <summary>
+            Occurs when a device has been disconnected. This occurs on unintended disconnects (e.g. when the device exploded).
+            </summary>
+        </member>
+        <member name="E:Plugin.BLE.Abstractions.AdapterBase.DeviceConnectionError">
+            <summary>
+            Occurs when the connection to a device fails.
+            </summary>
+        </member>
+        <member name="E:Plugin.BLE.Abstractions.AdapterBase.ScanTimeoutElapsed">
+            <summary>
+            Occurs when the scan has been stopped due the timeout after <see cref="P:Plugin.BLE.Abstractions.AdapterBase.ScanTimeout"/> ms.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.AdapterBase.IsScanning">
+            <summary>
+            Indicates, if the adapter is scanning for devices.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.AdapterBase.ScanTimeout">
+            <summary>
+            Timeout for Ble scanning. Default is 10000.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.AdapterBase.ScanMode">
+            <summary>
+            Specifies the scanning mode. Must be set before calling StartScanningForDevicesAsync().
+            Changing it while scanning, will have no change the current scan behavior.
+            Default: <see cref="F:Plugin.BLE.Abstractions.Contracts.ScanMode.LowPower"/> 
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.AdapterBase.ScanMatchMode">
+            <summary>
+            Scan match mode defines how agressively we look for adverts
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.AdapterBase.DiscoveredDevicesRegistry">
+            <summary>
+            Dictionary of all discovered devices, indexed by Guid.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.AdapterBase.DiscoveredDevices">
+            <summary>
+            List of all discovered devices.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.AdapterBase.ConnectedDeviceRegistry">
+            <summary>
+            Used to store all connected devices
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.AdapterBase.ConnectedDevices">
+            <summary>
+            List of all connected devices.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.AdapterBase.StartScanningForDevicesAsync(Plugin.BLE.Abstractions.ScanFilterOptions,System.Func{Plugin.BLE.Abstractions.Contracts.IDevice,System.Boolean},System.Boolean,System.Threading.CancellationToken)">
+            <summary>
+            Starts scanning for BLE devices that fulfill the <paramref name="deviceFilter"/>.
+            DeviceDiscovered will only be called, if <paramref name="deviceFilter"/> returns <c>true</c> for the discovered device.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.AdapterBase.StartScanningForDevicesAsync(System.Guid[],System.Func{Plugin.BLE.Abstractions.Contracts.IDevice,System.Boolean},System.Boolean,System.Threading.CancellationToken)">
+            <summary>
+            Starts scanning for BLE devices that fulfill the <paramref name="deviceFilter"/>.
+            DeviceDiscovered will only be called, if <paramref name="deviceFilter"/> returns <c>true</c> for the discovered device.
+            This overload takes a list of service IDs and is only kept for backwards compatibility. Might be removed in a future version.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.AdapterBase.StopScanningForDevicesAsync">
+            <summary>
+            Stops scanning for BLE devices.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.AdapterBase.ConnectToDeviceAsync(Plugin.BLE.Abstractions.Contracts.IDevice,Plugin.BLE.Abstractions.ConnectParameters,System.Threading.CancellationToken)">
+            <summary>
+            Connects to the <paramref name="device"/>.
+            </summary>
+            <param name="device">Device to connect to.</param>
+            <param name="connectParameters">Connection parameters. Contains platform specific parameters needed to achieved connection. The default value is None.</param>
+            <param name="cancellationToken">The token to monitor for cancellation requests. The default value is None.</param>
+            <returns>A task that represents the asynchronous read operation. The Task will finish after the device has been connected successfuly.</returns>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.AdapterBase.DisconnectDeviceAsync(Plugin.BLE.Abstractions.Contracts.IDevice)">
+            <summary>
+            Disconnects from the <paramref name="device"/>.
+            </summary>
+            <param name="device">Device to connect from.</param>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.AdapterBase.HandleDiscoveredDevice(Plugin.BLE.Abstractions.Contracts.IDevice)">
+            <summary>
+            Handle discovery of a new device.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.AdapterBase.HandleConnectedDevice(Plugin.BLE.Abstractions.Contracts.IDevice)">
+            <summary>
+            Handle connection of a new device.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.AdapterBase.HandleDisconnectedDevice(System.Boolean,Plugin.BLE.Abstractions.Contracts.IDevice)">
+            <summary>
+            Handle disconnection of a device.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.AdapterBase.HandleConnectionFail(Plugin.BLE.Abstractions.Contracts.IDevice,System.String)">
+            <summary>
+            Handle connection failure.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.AdapterBase.StartScanningForDevicesNativeAsync(Plugin.BLE.Abstractions.ScanFilterOptions,System.Boolean,System.Threading.CancellationToken)">
+            <summary>
+            Native implementation of StartScanningForDevicesAsync.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.AdapterBase.StopScanNative">
+            <summary>
+            Stopping the scan (native implementation).
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.AdapterBase.ConnectToDeviceNativeAsync(Plugin.BLE.Abstractions.Contracts.IDevice,Plugin.BLE.Abstractions.ConnectParameters,System.Threading.CancellationToken)">
+            <summary>
+            Native implementation of ConnectToDeviceAsync.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.AdapterBase.DisconnectDeviceNative(Plugin.BLE.Abstractions.Contracts.IDevice)">
+            <summary>
+            Native implementation of DisconnectDeviceAsync.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.AdapterBase.ConnectToKnownDeviceAsync(System.Guid,Plugin.BLE.Abstractions.ConnectParameters,System.Threading.CancellationToken)">
+            <summary>
+            Connects to a device with a known GUID without scanning and if in range. Does not scan for devices.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.AdapterBase.GetSystemConnectedOrPairedDevices(System.Guid[])">
+            <summary>
+            Returns all BLE devices connected to the system.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.AdapterBase.GetKnownDevicesByIds(System.Guid[])">
+            <summary>
+            Returns a list of paired BLE devices for the given UUIDs.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.AdapterBase.SupportsExtendedAdvertising">
+            <summary>
+            Indicates whether extended advertising (BLE5) is supported.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.AdapterBase.SupportsCodedPHY">
+            <summary>
+            Indicates whether the Coded PHY feature (BLE5) is supported.
+            </summary>
+        </member>
+        <member name="T:Plugin.BLE.Abstractions.AdvertisementRecordType">
+            <summary>
+            Enumeration of various advertisement-record types.
+            </summary>
+        </member>
+        <member name="F:Plugin.BLE.Abstractions.AdvertisementRecordType.Flags">
+            <summary>
+            «Flags»	Bluetooth Core Specification:
+            </summary>
+        </member>
+        <member name="F:Plugin.BLE.Abstractions.AdvertisementRecordType.UuidsIncomple16Bit">
+             <summary>
+            «Incomplete List of 16-bit Service Class UUIDs»	Bluetooth Core 
+             </summary>
+        </member>
+        <member name="F:Plugin.BLE.Abstractions.AdvertisementRecordType.UuidsComplete16Bit">
+            <summary>
+            «Complete List of 16-bit Service Class UUIDs»	Bluetooth Core 
+            </summary>
+        </member>
+        <member name="F:Plugin.BLE.Abstractions.AdvertisementRecordType.UuidsIncomplete32Bit">
+            <summary>
+            «Incomplete List of 32-bit Service Class UUIDs»	Bluetooth Core 
+            </summary>
+        </member>
+        <member name="F:Plugin.BLE.Abstractions.AdvertisementRecordType.UuidCom32Bit">
+            <summary>
+            «Complete List of 32-bit Service Class UUIDs»	Bluetooth Core Specification:
+            </summary>
+        </member>
+        <member name="F:Plugin.BLE.Abstractions.AdvertisementRecordType.UuidsIncomplete128Bit">
+            <summary>
+            «Incomplete List of 128-bit Service Class UUIDs»	Bluetooth Core 
+            </summary>
+        </member>
+        <member name="F:Plugin.BLE.Abstractions.AdvertisementRecordType.UuidsComplete128Bit">
+            <summary>
+            //«Complete List of 128-bit Service Class UUIDs»	Bluetooth Core
+            </summary>
+        </member>
+        <member name="F:Plugin.BLE.Abstractions.AdvertisementRecordType.ShortLocalName">
+            <summary>
+            «Shortened Local Name»	Bluetooth Core Specification:
+            </summary>
+        </member>
+        <member name="F:Plugin.BLE.Abstractions.AdvertisementRecordType.CompleteLocalName">
+            <summary>
+            «Complete Local Name»	Bluetooth Core Specification:
+            </summary>
+        </member>
+        <member name="F:Plugin.BLE.Abstractions.AdvertisementRecordType.TxPowerLevel">
+            <summary>
+            «Tx Power Level»	Bluetooth Core Specification:
+            </summary>
+        </member>
+        <member name="F:Plugin.BLE.Abstractions.AdvertisementRecordType.Deviceclass">
+            <summary>
+            «Class of Device»	Bluetooth Core Specification:
+            </summary>
+        </member>
+        <member name="F:Plugin.BLE.Abstractions.AdvertisementRecordType.SimplePairingHash">
+            <summary>
+            «Simple Pairing Hash C»	Bluetooth Core Specification:
+            ​«Simple Pairing Hash C-192»	​Core Specification Supplement, Part A, section 1.6
+            </summary>
+        </member>
+        <member name="F:Plugin.BLE.Abstractions.AdvertisementRecordType.SimplePairingRandomizer">
+            <summary>
+            «Simple Pairing Randomizer R»	Bluetooth Core Specification:
+            ​«Simple Pairing Randomizer R-192»	​Core Specification Supplement, Part A, section 1.6
+            </summary>
+        </member>
+        <member name="F:Plugin.BLE.Abstractions.AdvertisementRecordType.DeviceId">
+            <summary>
+            «Device Id»	Device Id Profile v1.3 or later,«Security Manager TK Value»
+            Bluetooth Core Specification:
+            </summary>
+        </member>
+        <member name="F:Plugin.BLE.Abstractions.AdvertisementRecordType.SecurityManager">
+            <summary>
+            «Security Manager Out of Band Flags»	Bluetooth Core Specification:
+            </summary>
+        </member>
+        <member name="F:Plugin.BLE.Abstractions.AdvertisementRecordType.SlaveConnectionInterval">
+            <summary>
+            «Slave Connection Interval Range»	Bluetooth Core Specification:
+            </summary>
+        </member>
+        <member name="F:Plugin.BLE.Abstractions.AdvertisementRecordType.SsUuids16Bit">
+            <summary>
+            «List of 16-bit Service Solicitation UUIDs»	Bluetooth Core Specification:
+            </summary>
+        </member>
+        <member name="F:Plugin.BLE.Abstractions.AdvertisementRecordType.SsUuids128Bit">
+            <summary>
+            «List of 128-bit Service Solicitation UUIDs»	Bluetooth Core Specification:
+            </summary>
+        </member>
+        <member name="F:Plugin.BLE.Abstractions.AdvertisementRecordType.ServiceData">
+            <summary>
+            «Service Data»	Bluetooth Core Specification:​«Service Data - 16-bit UUID»
+            	​Core Specification Supplement, Part A, section 1.11
+            </summary>
+        </member>
+        <member name="F:Plugin.BLE.Abstractions.AdvertisementRecordType.PublicTargetAddress">
+            <summary>
+            «Public Target Address»	Bluetooth Core Specification:
+            </summary>
+        </member>
+        <member name="F:Plugin.BLE.Abstractions.AdvertisementRecordType.RandomTargetAddress">
+            <summary>
+            «Random Target Address»	Bluetooth Core Specification:
+            </summary>
+        </member>
+        <member name="F:Plugin.BLE.Abstractions.AdvertisementRecordType.Appearance">
+            <summary>
+            «Appearance»	Bluetooth Core Specification:
+            </summary>
+        </member>
+        <member name="F:Plugin.BLE.Abstractions.AdvertisementRecordType.DeviceAddress">
+            <summary>
+            «​LE Bluetooth Device Address»	​Core Specification Supplement, Part A, section 1.16
+            </summary>
+        </member>
+        <member name="F:Plugin.BLE.Abstractions.AdvertisementRecordType.LeRole">
+            <summary>
+            «​LE Role»	​Core Specification Supplement, Part A, section 1.17
+            </summary>
+        </member>
+        <member name="F:Plugin.BLE.Abstractions.AdvertisementRecordType.PairingHash">
+            <summary>
+            «​Simple Pairing Hash C-256»	​Core Specification Supplement, Part A, section 1.6
+            </summary>
+        </member>
+        <member name="F:Plugin.BLE.Abstractions.AdvertisementRecordType.PairingRandomizer">
+            <summary>
+            «​Simple Pairing Randomizer R-256»	​Core Specification Supplement, Part A, section 1.6
+            </summary>
+        </member>
+        <member name="F:Plugin.BLE.Abstractions.AdvertisementRecordType.SsUuids32Bit">
+            <summary>
+            List of 32-bit Service Solicitation UUIDs»	​Core Specification Supplement, Part A, section 1.10
+            </summary>
+        </member>
+        <member name="F:Plugin.BLE.Abstractions.AdvertisementRecordType.ServiceDataUuid32Bit">
+            <summary>
+            //​«Service Data - 32-bit UUID»	​Core Specification Supplement, Part A, section 1.11
+            </summary>
+        </member>
+        <member name="F:Plugin.BLE.Abstractions.AdvertisementRecordType.ServiceData128Bit">
+            <summary>
+            ​«Service Data - 128-bit UUID»	​Core Specification Supplement, Part A, section 1.11
+            </summary>
+        </member>
+        <member name="F:Plugin.BLE.Abstractions.AdvertisementRecordType.SecureConnectionsConfirmationValue">
+            <summary>
+            «​LE Secure Connections Confirmation Value»	​Core Specification Supplement Part A, Section 1.6
+            </summary>
+        </member>
+        <member name="F:Plugin.BLE.Abstractions.AdvertisementRecordType.SecureConnectionsRandomValue">
+            <summary>
+            ​​«​LE Secure Connections Random Value»	​Core Specification Supplement Part A, Section 1.6​
+            </summary>
+        </member>
+        <member name="F:Plugin.BLE.Abstractions.AdvertisementRecordType.Information3DData">
+            <summary>
+            «3D Information Data»	​3D Synchronization Profile, v1.0 or later
+            </summary>
+        </member>
+        <member name="F:Plugin.BLE.Abstractions.AdvertisementRecordType.ManufacturerSpecificData">
+            <summary>
+            «Manufacturer Specific Data»	Bluetooth Core Specification:
+            </summary>
+        </member>
+        <member name="T:Plugin.BLE.Abstractions.AdvertisementRecord">
+            <summary>
+            A single advertisement record.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.AdvertisementRecord.Type">
+            <summary>
+            The type of the advertisement record.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.AdvertisementRecord.Data">
+            <summary>
+            The data included in the advertisement record (as a byte array).
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.AdvertisementRecord.#ctor(Plugin.BLE.Abstractions.AdvertisementRecordType,System.Byte[])">
+            <summary>
+            AdvertisementRecord constructor.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.AdvertisementRecord.ToString">
+            <summary>
+            Returns a string describing the record.
+            </summary>
+        </member>
+        <member name="T:Plugin.BLE.Abstractions.BleImplementationBase">
+            <summary>
+            Base class for platform-specific BLE implementations.
+            </summary>
+        </member>
+        <member name="E:Plugin.BLE.Abstractions.BleImplementationBase.StateChanged">
+            <summary>
+            Occurs when the state of the Bluetooth adapter changes.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.BleImplementationBase.IsAvailable">
+            <summary>
+            Indicates whether the device supports BLE.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.BleImplementationBase.IsOn">
+            <summary>
+            Indicates whether the Bluetooth adapter is turned on.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.BleImplementationBase.Adapter">
+            <summary>
+            The Bluetooth adapter.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.BleImplementationBase.State">
+            <summary>
+            The current state of the Bluetooth adapter.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.BleImplementationBase.#ctor">
+            <summary>
+            BleImplementationBase constructor.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.BleImplementationBase.Initialize">
+            <summary>
+            Initialize the Bluetooth adapter and determine its initial state.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.BleImplementationBase.InitializeNative">
+            <summary>
+            Native implementation of <c>Initialize</c>.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.BleImplementationBase.GetInitialStateNative">
+            <summary>
+            Get initial state of native adapter.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.BleImplementationBase.CreateNativeAdapter">
+            <summary>
+            Create the native adapter.
+            </summary>
+        </member>
+        <member name="T:Plugin.BLE.Abstractions.CharacteristicBase`1">
+            <summary>
+            Base class for platform-specific <c>Characteristic</c> classes.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.CharacteristicBase`1.NativeCharacteristic">
+            <summary>
+            The native characteristic.
+            </summary>
+        </member>
+        <member name="E:Plugin.BLE.Abstractions.CharacteristicBase`1.ValueUpdated">
+            <summary>
+            Event gets raised, when the davice notifies a value change on this characteristic.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.CharacteristicBase`1.Id">
+            <summary>
+            Id of the characteristic.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.CharacteristicBase`1.Uuid">
+            <summary>
+            Uuid of the characteristic.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.CharacteristicBase`1.Value">
+            <summary>
+            Gets the last known value of the characteristic.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.CharacteristicBase`1.Name">
+            <summary>
+            Name of the characteristic.
+            Returns the name if the <see cref="P:Plugin.BLE.Abstractions.CharacteristicBase`1.Id"/> is a id of a standard characteristic.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.CharacteristicBase`1.Properties">
+            <summary>
+            Properties of the characteristic.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.CharacteristicBase`1.Service">
+            <summary>
+            Returns the parent service. Use this to access the device.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.CharacteristicBase`1.WriteType">
+            <summary>
+            Specifies how the <see cref="M:Plugin.BLE.Abstractions.CharacteristicBase`1.WriteAsync(System.Byte[],System.Threading.CancellationToken)"/> function writes the value.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.CharacteristicBase`1.CanRead">
+            <summary>
+            Indicates wheter the characteristic can be read or not.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.CharacteristicBase`1.CanUpdate">
+            <summary>
+            Indicates wheter the characteristic supports notify or not.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.CharacteristicBase`1.CanWrite">
+            <summary>
+            Indicates wheter the characteristic can be written or not.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.CharacteristicBase`1.StringValue">
+            <summary>
+            Gets <see cref="P:Plugin.BLE.Abstractions.CharacteristicBase`1.Value"/> as UTF8 encoded string representation.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.CharacteristicBase`1.#ctor(Plugin.BLE.Abstractions.Contracts.IService,`0)">
+            <summary>
+            CharacteristicBase constructor.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.CharacteristicBase`1.ReadAsync(System.Threading.CancellationToken)">
+            <summary>
+            Reads the characteristic value from the device. The result is also stored inisde the Value property.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.CharacteristicBase`1.WriteAsync(System.Byte[],System.Threading.CancellationToken)">
+            <summary>
+            Sends <paramref name="data"/> as characteristic value to the device.
+            </summary>
+            <param name="data">Data that should be written.</param>
+            <param name="cancellationToken"></param>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.CharacteristicBase`1.StartUpdatesAsync(System.Threading.CancellationToken)">
+            <summary>
+            Starts listening for notify events on this characteristic.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.CharacteristicBase`1.StopUpdatesAsync(System.Threading.CancellationToken)">
+            <summary>
+            Stops listening for notify events on this characteristic.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.CharacteristicBase`1.GetDescriptorsAsync(System.Threading.CancellationToken)">
+            <summary>
+            Gets the descriptors of the characteristic.
+            </summary>
+            <param name="cancellationToken"></param>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.CharacteristicBase`1.GetDescriptorAsync(System.Guid,System.Threading.CancellationToken)">
+            <summary>
+            Gets the first descriptor with the Id <paramref name="id"/>. 
+            </summary>
+            <param name="id">The id of the searched descriptor.</param>
+            <param name="cancellationToken"></param>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.CharacteristicBase`1.GetDescriptorsNativeAsync">
+            <summary>
+            Native implementation of <c>GetDescriptorsAsync</c>.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.CharacteristicBase`1.ReadNativeAsync">
+            <summary>
+            Native implementation of <c>ReadAsync</c>.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.CharacteristicBase`1.WriteNativeAsync(System.Byte[],Plugin.BLE.Abstractions.CharacteristicWriteType)">
+            <summary>
+            Native implementation of <c>WriteAsync</c>.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.CharacteristicBase`1.StartUpdatesNativeAsync(System.Threading.CancellationToken)">
+            <summary>
+            Native implementation of <c>StartUpdatesAsync</c>.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.CharacteristicBase`1.StopUpdatesNativeAsync(System.Threading.CancellationToken)">
+            <summary>
+            Native implementation of <c>StopUpdatesAsync</c>.
+            </summary>
+        </member>
+        <member name="T:Plugin.BLE.Abstractions.CharacteristicPropertyType">
+            <summary>
+            Represents the properties of a characteristic.
+            It's a superset of all common platform specific properties.
+            See: https://github.com/xabre/xamarin-bluetooth-le/blob/master/doc/characteristics.md 
+            </summary>
+        </member>
+        <member name="F:Plugin.BLE.Abstractions.CharacteristicPropertyType.Broadcast">
+            <summary>
+            Characteristic value can be broadcasted.
+            </summary>
+        </member>
+        <member name="F:Plugin.BLE.Abstractions.CharacteristicPropertyType.Read">
+            <summary>
+            Characteristic value can be read.
+            </summary>
+        </member>
+        <member name="F:Plugin.BLE.Abstractions.CharacteristicPropertyType.WriteWithoutResponse">
+            <summary>
+            Characteristic value can be written without response.
+            </summary>
+        </member>
+        <member name="F:Plugin.BLE.Abstractions.CharacteristicPropertyType.Write">
+            <summary>
+            Characteristic can be written with response.
+            </summary>
+        </member>
+        <member name="F:Plugin.BLE.Abstractions.CharacteristicPropertyType.Notify">
+            <summary>
+            Characteristic can notify value changes without acknowledgement.
+            </summary>
+        </member>
+        <member name="F:Plugin.BLE.Abstractions.CharacteristicPropertyType.Indicate">
+             <summary>
+            Characteristic can indicate value changes with acknowledgement.
+             </summary>
+        </member>
+        <member name="F:Plugin.BLE.Abstractions.CharacteristicPropertyType.AuthenticatedSignedWrites">
+            <summary>
+            Characteristic value can be written signed.
+            </summary>
+        </member>
+        <member name="F:Plugin.BLE.Abstractions.CharacteristicPropertyType.ExtendedProperties">
+            <summary>
+            Indicates that more properties are set in the extended properties descriptor.
+            </summary>
+        </member>
+        <member name="F:Plugin.BLE.Abstractions.CharacteristicPropertyType.NotifyEncryptionRequired">
+            <summary>
+            iOS-specific value (0x100),
+            see https://developer.apple.com/documentation/corebluetooth/cbcharacteristicproperties/cbcharacteristicpropertynotifyencryptionrequired 
+            </summary>
+        </member>
+        <member name="F:Plugin.BLE.Abstractions.CharacteristicPropertyType.IndicateEncryptionRequired">
+            <summary>
+            iOS-specific value (0x200),
+            see https://developer.apple.com/documentation/corebluetooth/cbcharacteristicproperties/cbcharacteristicpropertyindicateencryptionrequired
+            </summary>
+        </member>
+        <member name="T:Plugin.BLE.Abstractions.CharacteristicWriteType">
+            <summary>
+            Specifies how a value should be written.
+            </summary>
+        </member>
+        <member name="F:Plugin.BLE.Abstractions.CharacteristicWriteType.Default">
+            <summary>
+            Value should be written with response if supported, else without response.
+            </summary>
+        </member>
+        <member name="F:Plugin.BLE.Abstractions.CharacteristicWriteType.WithResponse">
+            <summary>
+            Value should be written with response.
+            </summary>
+        </member>
+        <member name="F:Plugin.BLE.Abstractions.CharacteristicWriteType.WithoutResponse">
+            <summary>
+            Value should be written without response.
+            </summary>
+        </member>
+        <member name="T:Plugin.BLE.Abstractions.ConnectionInterval">
+            <summary>
+            This enum is currently being used on Android only.
+            It will be mapped to Android's gattConnectionPriorities,
+            see https://developer.android.com/reference/android/bluetooth/BluetoothGatt.html#requestConnectionPriority(int)
+            </summary>
+        </member>
+        <member name="F:Plugin.BLE.Abstractions.ConnectionInterval.Normal">
+            <summary>
+            Normal (default) connection interval.
+            This is mapped to CONNECTION_PRIORITY_BALANCED,
+            see https://developer.android.com/reference/android/bluetooth/BluetoothGatt#CONNECTION_PRIORITY_BALANCED
+            </summary>
+        </member>
+        <member name="F:Plugin.BLE.Abstractions.ConnectionInterval.High">
+            <summary>
+            High-priority connection interval (low latency connection).
+            This is mapped to CONNECTION_PRIORITY_HIGH,
+            see https://developer.android.com/reference/android/bluetooth/BluetoothGatt#CONNECTION_PRIORITY_HIGH
+            </summary>
+        </member>
+        <member name="F:Plugin.BLE.Abstractions.ConnectionInterval.Low">
+            <summary>
+            Low-priority connection interval (low power, reduced data rate).
+            This is mapped to CONNECTION_PRIORITY_LOW_POWER,
+            see https://developer.android.com/reference/android/bluetooth/BluetoothGatt#CONNECTION_PRIORITY_LOW_POWER
+            </summary>
+        </member>
+        <member name="T:Plugin.BLE.Abstractions.ConnectParameters">
+            <summary>
+            Connection parameters. Contains platform specific parameters needed to achieved connection
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.ConnectParameters.AutoConnect">
+            <summary>
+            Android only, from documentation:  
+            boolean: Whether to directly connect to the remote device (false) or to automatically connect as soon as the remote device becomes available (true).
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.ConnectParameters.ForceBleTransport">
+            <summary>
+            Android only: For Dual Mode device, force transport mode to LE. The default is false.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.ConnectParameters.None">
+            <summary>
+            Default-constructed connection parameters (all parameters set to false).
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.ConnectParameters.#ctor(System.Boolean,System.Boolean)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="autoConnect">Android only: Whether to directly connect to the remote device (false) or to automatically connect as soon as the remote device becomes available (true). The default is false.</param>
+            <param name="forceBleTransport">Android only: For Dual Mode device, force transport mode to LE. The default is false.</param>
+        </member>
+        <member name="T:Plugin.BLE.Abstractions.Contracts.BluetoothState">
+            <summary>
+            State of the bluetooth adapter.
+            </summary>
+        </member>
+        <member name="F:Plugin.BLE.Abstractions.Contracts.BluetoothState.Unknown">
+            <summary>
+            A meaningful state could not get determined. Check it again later.
+            </summary>
+        </member>
+        <member name="F:Plugin.BLE.Abstractions.Contracts.BluetoothState.Unavailable">
+            <summary>
+            The device doesn't support bluetooth LE.
+            </summary>
+        </member>
+        <member name="F:Plugin.BLE.Abstractions.Contracts.BluetoothState.Unauthorized">
+            <summary>
+            The user has not granted the necessary rights to your app.
+            </summary>
+        </member>
+        <member name="F:Plugin.BLE.Abstractions.Contracts.BluetoothState.TurningOn">
+            <summary>
+            The bluetooth adapter is turning on.
+            </summary>
+        </member>
+        <member name="F:Plugin.BLE.Abstractions.Contracts.BluetoothState.On">
+            <summary>
+            The bluetooth adapter is turned on.
+            </summary>
+        </member>
+        <member name="F:Plugin.BLE.Abstractions.Contracts.BluetoothState.TurningOff">
+            <summary>
+            The bluetooth adapter is turning off.
+            </summary>
+        </member>
+        <member name="F:Plugin.BLE.Abstractions.Contracts.BluetoothState.Off">
+            <summary>
+            The bluetooth adapter is turned off.
+            </summary>
+        </member>
+        <member name="T:Plugin.BLE.Abstractions.Contracts.IAdapter">
+            <summary>
+            The bluetooth LE Adapter.
+            </summary>
+        </member>
+        <member name="E:Plugin.BLE.Abstractions.Contracts.IAdapter.DeviceAdvertised">
+            <summary>
+            Occurs when the adapter receives an advertisement.
+            </summary>
+        </member>
+        <member name="E:Plugin.BLE.Abstractions.Contracts.IAdapter.DeviceDiscovered">
+            <summary>
+            Occurs when the adapter receives an advertisement for the first time of the current scan run.
+            This means once per every <c>StartScanningForDevicesAsync</c> call. 
+            </summary>
+        </member>
+        <member name="E:Plugin.BLE.Abstractions.Contracts.IAdapter.DeviceConnected">
+            <summary>
+            Occurs when a device has been connected.
+            </summary>
+        </member>
+        <member name="E:Plugin.BLE.Abstractions.Contracts.IAdapter.DeviceDisconnected">
+            <summary>
+            Occurs when a device has been disconnected. This occurs on intended disconnects after <see cref="M:Plugin.BLE.Abstractions.Contracts.IAdapter.DisconnectDeviceAsync(Plugin.BLE.Abstractions.Contracts.IDevice)"/>.
+            </summary>
+        </member>
+        <member name="E:Plugin.BLE.Abstractions.Contracts.IAdapter.DeviceConnectionLost">
+            <summary>
+            Occurs when a device has been disconnected. This occurs on unintended disconnects (e.g. when the device exploded).
+            </summary>
+        </member>
+        <member name="E:Plugin.BLE.Abstractions.Contracts.IAdapter.DeviceConnectionError">
+            <summary>
+            Occurs when the connection to a device fails.
+            </summary>
+        </member>
+        <member name="E:Plugin.BLE.Abstractions.Contracts.IAdapter.ScanTimeoutElapsed">
+            <summary>
+            Occurs when the scan has been stopped due the timeout after <see cref="P:Plugin.BLE.Abstractions.Contracts.IAdapter.ScanTimeout"/> ms.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.Contracts.IAdapter.IsScanning">
+            <summary>
+            Indicates, if the adapter is scanning for devices.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.Contracts.IAdapter.ScanTimeout">
+            <summary>
+            Timeout for Ble scanning. Default is 10000.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.Contracts.IAdapter.ScanMode">
+            <summary>
+            Specifies the scanning mode. Must be set before calling StartScanningForDevicesAsync().
+            Changing it while scanning, will have no change the current scan behavior.
+            Default: <see cref="F:Plugin.BLE.Abstractions.Contracts.ScanMode.LowPower"/> 
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.Contracts.IAdapter.ScanMatchMode">
+            <summary>
+            Specified the scan match mode. Must be set before calling StartScanningForDevicesAsync().
+            Changing it while scanning, will have no change the current scan behavior.
+            Default: <see cref="F:Plugin.BLE.Abstractions.Contracts.ScanMatchMode.STICKY"/> 
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.Contracts.IAdapter.DiscoveredDevices">
+            <summary>
+            List of last discovered devices.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.Contracts.IAdapter.ConnectedDevices">
+            <summary>
+            List of currently connected devices.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.Contracts.IAdapter.StartScanningForDevicesAsync(Plugin.BLE.Abstractions.ScanFilterOptions,System.Func{Plugin.BLE.Abstractions.Contracts.IDevice,System.Boolean},System.Boolean,System.Threading.CancellationToken)">
+            <summary>
+            Starts scanning for BLE devices that fulfill the <paramref name="deviceFilter"/>.
+            DeviceDiscovered will only be called, if <paramref name="deviceFilter"/> returns <c>true</c> for the discovered device.
+            </summary>
+            <param name="scanFilterOptions">Options to pass to the native BLE scan filter, which can improve scan performance.</param>
+            <param name="deviceFilter">Function that filters the devices returned by the scan. The default is a function that returns true.</param>
+            <param name="allowDuplicatesKey"> iOS only: If true, filtering is disabled and a discovery event is generated each time the central receives an advertising packet from the peripheral. 
+            Disabling this filtering can have an adverse effect on battery life and should be used only if necessary.
+            If false, multiple discoveries of the same peripheral are coalesced into a single discovery event. 
+            If the key is not specified, the default value is false.
+            For android, key is ignored.</param>
+            <param name="cancellationToken">The token to monitor for cancellation requests. The default value is None.</param>
+            <returns>A task that represents the asynchronous read operation. The Task will finish after the scan has ended.</returns>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.Contracts.IAdapter.StartScanningForDevicesAsync(System.Guid[],System.Func{Plugin.BLE.Abstractions.Contracts.IDevice,System.Boolean},System.Boolean,System.Threading.CancellationToken)">
+            <summary>
+            Starts scanning for BLE devices that fulfill the <paramref name="deviceFilter"/>.
+            DeviceDiscovered will only be called, if <paramref name="deviceFilter"/> returns <c>true</c> for the discovered device.
+            This overload takes a list of service IDs and is only kept for backwards compatibility. Might be removed in a future version.
+            </summary>
+            <param name="serviceUuids">Requested service Ids.</param>
+            <param name="deviceFilter">Function that filters the devices. The default is a function that returns true.</param>
+            <param name="allowDuplicatesKey"> iOS only: If true, filtering is disabled and a discovery event is generated each time the central receives an advertising packet from the peripheral. 
+            Disabling this filtering can have an adverse effect on battery life and should be used only if necessary.
+            If false, multiple discoveries of the same peripheral are coalesced into a single discovery event. 
+            If the key is not specified, the default value is false.
+            For android, key is ignored.</param>
+            <param name="cancellationToken">The token to monitor for cancellation requests. The default value is None.</param>
+            <returns>A task that represents the asynchronous read operation. The Task will finish after the scan has ended.</returns>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.Contracts.IAdapter.StopScanningForDevicesAsync">
+            <summary>
+            Stops scanning for BLE devices.
+            </summary>
+            <returns>A task that represents the asynchronous read operation. The Task will finish after the scan has ended.</returns>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.Contracts.IAdapter.ConnectToDeviceAsync(Plugin.BLE.Abstractions.Contracts.IDevice,Plugin.BLE.Abstractions.ConnectParameters,System.Threading.CancellationToken)">
+            <summary>
+            Connects to the <paramref name="device"/>.
+            </summary>
+            <param name="device">Device to connect to.</param>
+            <param name="connectParameters">Connection parameters. Contains platform specific parameters needed to achieved connection. The default value is None.</param>
+            <param name="cancellationToken">The token to monitor for cancellation requests. The default value is None.</param>
+            <returns>A task that represents the asynchronous read operation. The Task will finish after the device has been connected successfuly.</returns>
+            <exception cref="T:Plugin.BLE.Abstractions.Exceptions.DeviceConnectionException">Thrown if the device connection fails.</exception>
+            <exception cref="T:System.ArgumentNullException">Thrown if the <paramref name="device"/> is null.</exception>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.Contracts.IAdapter.DisconnectDeviceAsync(Plugin.BLE.Abstractions.Contracts.IDevice)">
+            <summary>
+            Disconnects from the <paramref name="device"/>.
+            </summary>
+            <param name="device">Device to connect from.</param>
+            <returns>A task that represents the asynchronous read operation. The Task will finish after the device has been disconnected successfuly.</returns>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.Contracts.IAdapter.ConnectToKnownDeviceAsync(System.Guid,Plugin.BLE.Abstractions.ConnectParameters,System.Threading.CancellationToken)">
+            <summary>
+            Connects to a device with a known GUID without scanning and if in range. Does not scan for devices.
+            </summary>
+            <param name="deviceGuid"></param>
+            <param name="connectParameters">Connection parameters. Contains platform specific parameters needed to achieved connection. The default value is None.</param>
+            <param name="cancellationToken">The token to monitor for cancellation requests. The default value is None.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.Contracts.IAdapter.GetSystemConnectedOrPairedDevices(System.Guid[])">
+            <summary>
+            Returns all BLE devices connected to the system.
+            </summary>
+            <remarks>
+            For android the implementations uses getConnectedDevices(GATT) and getBondedDevices()
+            and for ios the implementation uses get retrieveConnectedPeripherals(services)
+            https://developer.apple.com/reference/corebluetooth/cbcentralmanager/1518924-retrieveconnectedperipherals
+            
+            For android this function merges the functionality of thw following API calls:
+            https://developer.android.com/reference/android/bluetooth/BluetoothManager.html#getConnectedDevices(int)
+            https://developer.android.com/reference/android/bluetooth/BluetoothAdapter.html#getBondedDevices()
+            In order to use the device in the app you have to first call ConnectAsync.
+            </remarks>
+            <param name="services">IMPORTANT: Only considered by iOS due to platform limitations. Filters devices by advertised services. SET THIS VALUE FOR ANY RESULTS</param>
+            <returns>List of IDevices connected to the OS.  In case of no devices the list is empty.</returns>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.Contracts.IAdapter.GetKnownDevicesByIds(System.Guid[])">
+            <summary>
+            Returns a list of paired BLE devices for the given UUIDs.
+            </summary>
+            <exception cref="T:System.ArgumentNullException">When ids is null</exception>
+            <param name="ids">The list of UUIDs</param>
+            <returns>The known device. Empty list if no device known.</returns>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.Contracts.IAdapter.SupportsExtendedAdvertising">
+            <summary>
+            Indicates whether extended advertising (BLE5) is supported.
+            </summary>
+            <returns><c>true</c> if extended advertising is supported, otherwise <c>false</c>.</returns>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.Contracts.IAdapter.SupportsCodedPHY">
+            <summary>
+            Indicates whether the Coded PHY feature (BLE5) is supported.
+            </summary>
+            <returns><c>true</c> if extended advertising is supported, otherwise <c>false</c>.</returns>
+        </member>
+        <member name="T:Plugin.BLE.Abstractions.Contracts.IBluetoothLE">
+            <summary>
+            Manages the bluetooth LE functionality of the device (usually your smartphone).
+            </summary>
+        </member>
+        <member name="E:Plugin.BLE.Abstractions.Contracts.IBluetoothLE.StateChanged">
+            <summary>
+            Occurs when <see cref="P:Plugin.BLE.Abstractions.Contracts.IBluetoothLE.State"/> has changed.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.Contracts.IBluetoothLE.State">
+            <summary>
+            State of the bluetooth LE.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.Contracts.IBluetoothLE.IsAvailable">
+            <summary>
+            Indicates whether the device can communicate via bluetooth low energy.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.Contracts.IBluetoothLE.IsOn">
+            <summary>
+            Indicates whether the bluetooth adapter is turned on or not.
+            <c>true</c> if <see cref="P:Plugin.BLE.Abstractions.Contracts.IBluetoothLE.State"/> is <c>BluetoothState.On</c>
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.Contracts.IBluetoothLE.Adapter">
+            <summary>
+            Adapter to that provides access to the physical bluetooth adapter.
+            </summary>
+        </member>
+        <member name="T:Plugin.BLE.Abstractions.Contracts.ICharacteristic">
+            <summary>
+            A bluetooth LE GATT characteristic.
+            </summary>
+        </member>
+        <member name="E:Plugin.BLE.Abstractions.Contracts.ICharacteristic.ValueUpdated">
+            <summary>
+            Event gets raised, when the davice notifies a value change on this characteristic.
+            To start listening, call <see cref="M:Plugin.BLE.Abstractions.Contracts.ICharacteristic.StartUpdatesAsync(System.Threading.CancellationToken)"/>.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.Contracts.ICharacteristic.Id">
+            <summary>
+            Id of the characteristic.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.Contracts.ICharacteristic.Uuid">
+            <summary>
+            TODO: review: do we need this in any case?
+            Uuid of the characteristic.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.Contracts.ICharacteristic.Name">
+            <summary>
+            Name of the characteristic.
+            Returns the name if the <see cref="P:Plugin.BLE.Abstractions.Contracts.ICharacteristic.Id"/> is a id of a standard characteristic.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.Contracts.ICharacteristic.Value">
+            <summary>
+            Gets the last known value of the characteristic.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.Contracts.ICharacteristic.StringValue">
+            <summary>
+            Gets <see cref="P:Plugin.BLE.Abstractions.Contracts.ICharacteristic.Value"/> as UTF8 encoded string representation.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.Contracts.ICharacteristic.Properties">
+            <summary>
+            Properties of the characteristic.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.Contracts.ICharacteristic.WriteType">
+            <summary>
+            Specifies how the <see cref="M:Plugin.BLE.Abstractions.Contracts.ICharacteristic.WriteAsync(System.Byte[],System.Threading.CancellationToken)"/> function writes the value.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.Contracts.ICharacteristic.CanRead">
+            <summary>
+            Indicates wheter the characteristic can be read or not.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.Contracts.ICharacteristic.CanWrite">
+            <summary>
+            Indicates wheter the characteristic can be written or not.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.Contracts.ICharacteristic.CanUpdate">
+            <summary>
+            Indicates wheter the characteristic supports notify or not.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.Contracts.ICharacteristic.Service">
+            <summary>
+            Returns the parent service. Use this to access the device.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.Contracts.ICharacteristic.ReadAsync(System.Threading.CancellationToken)">
+            <summary>
+            Reads the characteristic value from the device. The result is also stored inisde the Value property.
+            </summary>
+            <param name="cancellationToken"></param>
+            <returns>A task that represents the asynchronous read operation. The Result property will contain a tuple with the read bytes and the ble result code.</returns>
+            <exception cref="T:System.InvalidOperationException">Thrown if characteristic doesn't support read. See: <see cref="P:Plugin.BLE.Abstractions.Contracts.ICharacteristic.CanRead"/></exception>
+            <exception cref="T:Plugin.BLE.Abstractions.Exceptions.CharacteristicReadException">Thrown if the reading of the value failed.</exception>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.Contracts.ICharacteristic.WriteAsync(System.Byte[],System.Threading.CancellationToken)">
+            <summary>
+            Sends <paramref name="data"/> as characteristic value to the device.
+            </summary>
+            <param name="data">Data that should be written.</param>
+            <param name="cancellationToken"></param>
+            <returns>
+            A task that represents the asynchronous write operation. The Task will finish after the value was written. The Result property will the errror
+            code sent by the BLE device. (0 = successful)
+            If the characteristic is write with response, the Task will finish if the value has been written. 
+            If it is write without response, the task will immediately finish with <c>0</c>.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">Thrown if characteristic doesn't support write. See: <see cref="P:Plugin.BLE.Abstractions.Contracts.ICharacteristic.CanWrite"/></exception>
+            <exception cref="T:System.ArgumentNullException">Thrwon if <paramref name="data"/> is null.</exception>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.Contracts.ICharacteristic.StartUpdatesAsync(System.Threading.CancellationToken)">
+            <summary>
+            Starts listening for notify events on this characteristic.
+            </summary>
+            <param name="cancellationToken"></param>
+            <exception cref="T:System.InvalidOperationException">Thrown if characteristic doesn't support notify. See: <see cref="P:Plugin.BLE.Abstractions.Contracts.ICharacteristic.CanUpdate"/></exception>
+            <exception cref="T:System.Exception">Thrown if an error occurs while starting notifications </exception>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.Contracts.ICharacteristic.StopUpdatesAsync(System.Threading.CancellationToken)">
+            <summary>
+            Stops listening for notify events on this characteristic.
+            </summary>
+            <param name="cancellationToken"></param>
+            <exception cref="T:System.Exception">Thrown if an error occurs while starting notifications </exception>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.Contracts.ICharacteristic.GetDescriptorsAsync(System.Threading.CancellationToken)">
+            <summary>
+            Gets the descriptors of the characteristic.
+            </summary>
+            <param name="cancellationToken"></param>
+            <returns>A task that represents the asynchronous read operation. The Result property will contain a list of descriptors.</returns> 
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.Contracts.ICharacteristic.GetDescriptorAsync(System.Guid,System.Threading.CancellationToken)">
+            <summary>
+            Gets the first descriptor with the Id <paramref name="id"/>. 
+            </summary>
+            <param name="id">The id of the searched descriptor.</param>
+            <param name="cancellationToken"></param>
+            <returns>
+            A task that represents the asynchronous read operation. 
+            The Result property will contain the descriptor with the specified <paramref name="id"/>.
+            If the descriptor doesn't exist, the Result will be null.
+            </returns>
+        </member>
+        <member name="T:Plugin.BLE.Abstractions.Contracts.IDescriptor">
+            <summary>
+            A descriptor for a GATT characteristic.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.Contracts.IDescriptor.Id">
+            <summary>
+            Id of the descriptor.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.Contracts.IDescriptor.Name">
+            <summary>
+            Name of the descriptor.
+            Returns the name if the <see cref="P:Plugin.BLE.Abstractions.Contracts.IDescriptor.Id"/> is a standard Id. See <see cref="T:Plugin.BLE.Abstractions.KnownDescriptors"/>.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.Contracts.IDescriptor.Value">
+            <summary>
+            The stored value of the descriptor. Call ReadAsync to update / write async to set it.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.Contracts.IDescriptor.Characteristic">
+            <summary>
+            Returns the parent characteristic
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.Contracts.IDescriptor.ReadAsync(System.Threading.CancellationToken)">
+            <summary>
+            Reads the characteristic value from the device. The result is also stored inisde the Value property.
+            </summary>
+            <param name="cancellationToken"></param>
+            <returns>A task that represents the asynchronous read operation. The Result property will contain the read bytes.</returns>
+            <exception cref="T:System.Exception">Thrown if the reading of the value failed.</exception>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.Contracts.IDescriptor.WriteAsync(System.Byte[],System.Threading.CancellationToken)">
+            <summary>
+            Sends <paramref name="data"/> as characteristic value to the device.
+            </summary>
+            <param name="data">Data that should be written.</param>
+            <param name="cancellationToken"></param>
+            <exception cref="T:System.ArgumentNullException">Thrwon if <paramref name="data"/> is null.</exception>
+            <exception cref="T:System.Exception">Thrwon if writing of the value failed.</exception>
+        </member>
+        <member name="T:Plugin.BLE.Abstractions.Contracts.IDevice">
+            <summary>
+            A bluetooth LE device.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.Contracts.IDevice.Id">
+            <summary>
+            Id of the device.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.Contracts.IDevice.Name">
+            <summary>
+            Advertised Name of the Device.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.Contracts.IDevice.Rssi">
+            <summary>
+            Last known rssi value in decibals.
+            Can be updated via <see cref="M:Plugin.BLE.Abstractions.Contracts.IDevice.UpdateRssiAsync"/>.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.Contracts.IDevice.NativeDevice">
+            <summary>
+            Gets the native device object reference. Should be cast to the 
+            appropriate type on each platform.
+            </summary>
+            <value>The native device.</value>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.Contracts.IDevice.State">
+            <summary>
+            State of the device.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.Contracts.IDevice.AdvertisementRecords">
+            <summary>
+            All the advertisment records
+            For example:
+            - Advertised Service UUIDS
+            - Manufacturer Specifc data
+            - ...
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.Contracts.IDevice.GetServicesAsync(System.Threading.CancellationToken)">
+            <summary>
+            Gets all services of the device.
+            </summary>
+            <param name="cancellationToken"></param>
+            <returns>A task that represents the asynchronous read operation. The Result property will contain a list of all available services.</returns>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.Contracts.IDevice.GetServiceAsync(System.Guid,System.Threading.CancellationToken)">
+            <summary>
+            Gets the first service with the Id <paramref name="id"/>. 
+            </summary>
+            <param name="id">The id of the searched service.</param>
+            <param name="cancellationToken"></param>
+            <returns>
+            A task that represents the asynchronous read operation. 
+            The Result property will contain the service with the specified <paramref name="id"/>.
+            If the service doesn't exist, the Result will be null.
+            </returns>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.Contracts.IDevice.UpdateRssiAsync">
+            <summary>
+            Updates the rssi value.
+            </summary>
+            <remarks>
+            Important:
+            On Android: This function will only work if the device is connected. The Rssi value will be determined once on the discovery of the device.
+            </remarks>
+            <returns>
+            A task that represents the asynchronous read operation. The Result property will contain a boolean that inticates if the update was successful.
+            The Task will finish after Rssi has been updated.
+            </returns>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.Contracts.IDevice.RequestMtuAsync(System.Int32)">
+            <summary>
+            Requests a MTU update and fires an "Exchange MTU Request" on the ble stack.
+            Be aware that the resulting MTU value will be negotiated between master and slave using your requested value for the negotiation.
+            </summary>
+            <remarks>
+            Important: 
+            On Android: This function will only work with API level 21 and higher. Other API level will get an default value as function result.
+            On iOS: Requesting MTU sizes is not supported by iOS. The function will return the current negotiated MTU between master / slave.
+            On Windows: Requesting MTU sizes is not directly supported. Windows will always try and negotiate the maximum MTU between master / slave. The function will return the current negotiated MTU between master / slave.
+            </remarks>
+            <returns>
+            A task that represents the asynchronous operation. The result contains the negotiated MTU size between master and slave</returns>
+            <param name="requestValue">The requested MTU</param>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.Contracts.IDevice.UpdateConnectionInterval(Plugin.BLE.Abstractions.ConnectionInterval)">
+            <summary>
+            Requests a bluetooth-le connection update request. Be aware that this is only implemented on Android (>= API 21). 
+            You can choose between a high, low and a normal mode which will requests the following connection intervals: HIGH (11-15ms). NORMAL (30-50ms). LOW (100-125ms).
+            Its not possible to request a specific connection interval.
+            </summary>
+            <remarks>
+            Important:
+            On Android: This function will only work with API level 21 and higher. Other API level will return false as function result.
+            On iOS: Updating the connection interval is not supported by iOS. The function simply returns false.
+            </remarks>
+            <returns>True if the update request was sucessfull. On iOS it will always return false.</returns>
+            <param name="interval">The requested interval (High/Low/Normal)</param>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.Contracts.IDevice.IsConnectable">
+            <summary>
+            Gets the information if the device has hinted during advertising that the device is connectable.
+            This information is not pat of an advertising record. It's determined from the PDU header.
+            Check SupportsIsConnectable to verify that the device supports IsConnectable.
+            If the device doesn't support IsConnectable then IsConnectable returns true.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.Contracts.IDevice.SupportsIsConnectable">
+            <summary>
+            True, if device supports IsConnectable else False
+            </summary>
+        </member>
+        <member name="T:Plugin.BLE.Abstractions.Contracts.IService">
+            <summary>
+            A bluetooth LE GATT service.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.Contracts.IService.Id">
+            <summary>
+            Id of the Service.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.Contracts.IService.Name">
+            <summary>
+            Name of the service.
+            Returns the name if the <see cref="P:Plugin.BLE.Abstractions.Contracts.IService.Id"/> is a standard Id. See <see cref="T:Plugin.BLE.Abstractions.KnownServices"/>.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.Contracts.IService.IsPrimary">
+            <summary>
+            Indicates whether the type of service is primary or secondary.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.Contracts.IService.Device">
+            <summary>
+            Returns the parent device.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.Contracts.IService.GetCharacteristicsAsync">
+            <summary>
+            Gets the characteristics of the service.
+            </summary>
+            <returns>A task that represents the asynchronous read operation. The Result property will contain a list of characteristics.</returns>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.Contracts.IService.GetCharacteristicAsync(System.Guid)">
+            <summary>
+            Gets the first characteristic with the Id <paramref name="id"/>. 
+            </summary>
+            <param name="id">The id of the searched characteristic.</param>
+            <returns>
+            A task that represents the asynchronous read operation. 
+            The Result property will contain the characteristic with the specified <paramref name="id"/>.
+            If the characteristic doesn't exist, the Result will be null.
+            </returns>
+        </member>
+        <member name="T:Plugin.BLE.Abstractions.Contracts.ScanMatchMode">
+            <summary>
+            Scan match mode (currently only used on Android).
+            See https://developer.android.com/reference/android/bluetooth/le/ScanSettings.Builder#setMatchMode(int)
+            </summary>
+        </member>
+        <member name="F:Plugin.BLE.Abstractions.Contracts.ScanMatchMode.AGRESSIVE">
+            <summary>
+            Agressive, report each advert no matter how weak.
+            See https://developer.android.com/reference/android/bluetooth/le/ScanSettings#MATCH_MODE_AGGRESSIVE
+            </summary>
+        </member>
+        <member name="F:Plugin.BLE.Abstractions.Contracts.ScanMatchMode.STICKY">
+            <summary>
+            Normal (default) scan match mode.
+            See https://developer.android.com/reference/android/bluetooth/le/ScanSettings#MATCH_MODE_STICKY
+            </summary>
+        </member>
+        <member name="T:Plugin.BLE.Abstractions.Contracts.ScanMode">
+            <summary>
+            Defines how Scans are performed.
+            See: https://github.com/xabre/xamarin-bluetooth-le/blob/master/doc/scanmode_mapping.md
+            </summary>
+        </member>
+        <member name="F:Plugin.BLE.Abstractions.Contracts.ScanMode.Passive">
+            <summary>
+            Passively listen for Scan results.
+            </summary>
+        </member>
+        <member name="F:Plugin.BLE.Abstractions.Contracts.ScanMode.LowPower">
+            <summary>
+            Perform Bluetooth LE scan in low power mode.
+            </summary>
+        </member>
+        <member name="F:Plugin.BLE.Abstractions.Contracts.ScanMode.Balanced">
+            <summary>
+            Perform Bluetooth LE scan in balanced power mode. Scan results are returned at a rate that provides a good trade-off between scan frequency and power consumption.
+            </summary>
+        </member>
+        <member name="F:Plugin.BLE.Abstractions.Contracts.ScanMode.LowLatency">
+            <summary>
+            Scan using highest duty cycle.
+            </summary>
+        </member>
+        <member name="T:Plugin.BLE.Abstractions.DescriptorBase`1">
+            <summary>
+            Base class for platform-specific <c>Descriptor</c> classes.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.DescriptorBase`1.NativeDescriptor">
+            <summary>
+            The native descriptor.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.DescriptorBase`1.Id">
+            <summary>
+            Id of the descriptor.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.DescriptorBase`1.Name">
+            <summary>
+            Name of the descriptor.
+            Returns the name if the <see cref="P:Plugin.BLE.Abstractions.DescriptorBase`1.Id"/> is a standard Id. See <see cref="T:Plugin.BLE.Abstractions.KnownDescriptors"/>.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.DescriptorBase`1.Value">
+            <summary>
+            The stored value of the descriptor. Call ReadAsync to update / write async to set it.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.DescriptorBase`1.Characteristic">
+            <summary>
+            Returns the parent characteristic.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.DescriptorBase`1.#ctor(Plugin.BLE.Abstractions.Contracts.ICharacteristic,`0)">
+            <summary>
+            DescriptorBase constructor.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.DescriptorBase`1.ReadAsync(System.Threading.CancellationToken)">
+            <summary>
+            Reads the characteristic value from the device. The result is also stored inisde the Value property.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.DescriptorBase`1.ReadNativeAsync">
+            <summary>
+            Native implementation of <c>ReadAsync</c>.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.DescriptorBase`1.WriteAsync(System.Byte[],System.Threading.CancellationToken)">
+            <summary>
+            Sends <paramref name="data"/> as characteristic value to the device.
+            </summary>
+            <param name="data">Data that should be written.</param>
+            <param name="cancellationToken"></param>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.DescriptorBase`1.WriteNativeAsync(System.Byte[])">
+            <summary>
+            Native implementation of <c>WriteAsync</c>.
+            </summary>
+        </member>
+        <member name="T:Plugin.BLE.Abstractions.ICancellationMaster">
+            <summary>
+            Base class for anything that needs a cancellation token source.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.ICancellationMaster.TokenSource">
+            <summary>
+            The cancellation token source.
+            </summary>
+        </member>
+        <member name="T:Plugin.BLE.Abstractions.ICancellationMasterExtensions">
+            <summary>
+            Extensions for <c>ICancellationMaster</c>.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.ICancellationMasterExtensions.GetCombinedSource(Plugin.BLE.Abstractions.ICancellationMaster,System.Threading.CancellationToken)">
+            <summary>
+            Obtain a combined token source of the <c>ICancellationMaster</c> with any other taken.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.ICancellationMasterExtensions.CancelEverything(Plugin.BLE.Abstractions.ICancellationMaster)">
+            <summary>
+            Cancel any task connected to the token and dispose the source.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.ICancellationMasterExtensions.CancelEverythingAndReInitialize(Plugin.BLE.Abstractions.ICancellationMaster)">
+            <summary>
+            Cancel any task connected to the token and create a new source.
+            </summary>
+        </member>
+        <member name="T:Plugin.BLE.Abstractions.DeviceBase`1">
+            <summary>
+            Base class for platform-specific <c>Device</c> classes.
+            </summary>
+        </member>
+        <member name="F:Plugin.BLE.Abstractions.DeviceBase`1.Adapter">
+            <summary>
+            The adapter that connects to this device.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.DeviceBase`1.Id">
+            <summary>
+            Id of the device.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.DeviceBase`1.Name">
+            <summary>
+            Advertised Name of the Device.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.DeviceBase`1.Rssi">
+            <summary>
+            Last known rssi value in decibals.
+            Can be updated via <see cref="M:Plugin.BLE.Abstractions.DeviceBase`1.UpdateRssiAsync"/>.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.DeviceBase`1.State">
+            <summary>
+            State of the device.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.DeviceBase`1.AdvertisementRecords">
+            <summary>
+            All the advertisment records.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.DeviceBase`1.NativeDevice">
+            <summary>
+            The native device.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.DeviceBase`1.#ctor(Plugin.BLE.Abstractions.Contracts.IAdapter,`0)">
+            <summary>
+            DeviceBase constructor.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.DeviceBase`1.GetServicesAsync(System.Threading.CancellationToken)">
+            <summary>
+            Gets all services of the device.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.DeviceBase`1.GetServiceAsync(System.Guid,System.Threading.CancellationToken)">
+            <summary>
+            Gets the first service with the Id <paramref name="id"/>. 
+            </summary>
+            <param name="id">The id of the searched service.</param>
+            <param name="cancellationToken"></param>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.DeviceBase`1.RequestMtuAsync(System.Int32)">
+            <summary>
+            Requests a MTU update and fires an "Exchange MTU Request" on the ble stack.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.DeviceBase`1.UpdateConnectionInterval(Plugin.BLE.Abstractions.ConnectionInterval)">
+            <summary>
+            Requests a bluetooth-le connection update request.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.DeviceBase`1.UpdateRssiAsync">
+            <summary>
+            Updates the rssi value.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.DeviceBase`1.GetState">
+            <summary>
+            Determines the state of the device.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.DeviceBase`1.GetServicesNativeAsync">
+            <summary>
+            Native implementation of <c>GetServicesAsync</c>.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.DeviceBase`1.GetServiceNativeAsync(System.Guid)">
+            <summary>
+            Currently not being used anywhere!
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.DeviceBase`1.RequestMtuNativeAsync(System.Int32)">
+            <summary>
+            Native implementation of <c>RequestMtuAsync</c>.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.DeviceBase`1.UpdateConnectionIntervalNative(Plugin.BLE.Abstractions.ConnectionInterval)">
+            <summary>
+            Native implementation of <c>UpdateConnectionInterval</c>.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.DeviceBase`1.ToString">
+            <summary>
+            Convert to string (using the advertised device name).
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.DeviceBase`1.Dispose">
+            <summary>
+            Dispose the device.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.DeviceBase`1.ClearServices">
+            <summary>
+            Clear all (known) services.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.DeviceBase`1.Equals(System.Object)">
+            <summary>
+            Equality operator for comparison with other devices.
+            Checks for equality of the <c>Id</c>.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.DeviceBase`1.GetHashCode">
+            <summary>
+            Returns the hash code for this instance
+            (using the hash code of the <c>Id</c>).
+            </summary>
+        </member>
+        <member name="T:Plugin.BLE.Abstractions.DeviceBondState">
+            <summary>
+            Bond/pairing state of a device (currently only used on Android),
+            see https://developer.android.com/reference/android/bluetooth/BluetoothDevice#getBondState()
+            </summary>
+        </member>
+        <member name="F:Plugin.BLE.Abstractions.DeviceBondState.NotBonded">
+            <summary>
+            Indicates that the remote device is not bonded (paired),
+            see https://developer.android.com/reference/android/bluetooth/BluetoothDevice#BOND_NONE
+            </summary>
+        </member>
+        <member name="F:Plugin.BLE.Abstractions.DeviceBondState.Bonding">
+            <summary>
+            Indicates bonding (pairing) is in progress with the remote device,
+            see https://developer.android.com/reference/android/bluetooth/BluetoothDevice#BOND_BONDING
+            </summary>
+        </member>
+        <member name="F:Plugin.BLE.Abstractions.DeviceBondState.Bonded">
+            <summary>
+            Indicates the remote device is bonded (paired),
+            see https://developer.android.com/reference/android/bluetooth/BluetoothDevice#BOND_BONDED
+            </summary>
+        </member>
+        <member name="T:Plugin.BLE.Abstractions.DeviceState">
+            <summary>
+            Determines the connection state of the device.
+            </summary>
+        </member>
+        <member name="F:Plugin.BLE.Abstractions.DeviceState.Disconnected">
+            <summary>
+            Device is disconnected.
+            </summary>
+        </member>
+        <member name="F:Plugin.BLE.Abstractions.DeviceState.Connecting">
+            <summary>
+            Device is connecting.
+            </summary>
+        </member>
+        <member name="F:Plugin.BLE.Abstractions.DeviceState.Connected">
+            <summary>
+            Device is connected.
+            </summary>
+        </member>
+        <member name="F:Plugin.BLE.Abstractions.DeviceState.Limited">
+            <summary>
+            OnAndroid: Device is connected to the system. In order to use this device please call connect it by using the Adapter. 
+            </summary>
+        </member>
+        <member name="T:Plugin.BLE.Abstractions.EventArgs.BluetoothStateChangedArgs">
+            <summary>
+            Event arguments for <c>BleImplementationBase.StateChanged</c>
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.EventArgs.BluetoothStateChangedArgs.OldState">
+            <summary>
+            State before the change.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.EventArgs.BluetoothStateChangedArgs.NewState">
+            <summary>
+            Current state.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.EventArgs.BluetoothStateChangedArgs.#ctor(Plugin.BLE.Abstractions.Contracts.BluetoothState,Plugin.BLE.Abstractions.Contracts.BluetoothState)">
+            <summary>
+            Constructor.
+            </summary>
+        </member>
+        <member name="T:Plugin.BLE.Abstractions.EventArgs.CharacteristicUpdatedEventArgs">
+            <summary>
+            Event arguments for <c>ICharacteristic.ValueUpdated</c>
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.EventArgs.CharacteristicUpdatedEventArgs.Characteristic">
+            <summary>
+            The characteristic.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.EventArgs.CharacteristicUpdatedEventArgs.#ctor(Plugin.BLE.Abstractions.Contracts.ICharacteristic)">
+            <summary>
+            Constructor.
+            </summary>
+        </member>
+        <member name="T:Plugin.BLE.Abstractions.EventArgs.DeviceBondStateChangedEventArgs">
+            <summary>
+            Event arguments for <c>BondStatusBroadcastReceiver.BondStateChanged</c>
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.EventArgs.DeviceBondStateChangedEventArgs.Device">
+            <summary>
+            The device.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.EventArgs.DeviceBondStateChangedEventArgs.State">
+            <summary>
+            The bond state.
+            </summary>
+        </member>
+        <member name="T:Plugin.BLE.Abstractions.EventArgs.DeviceErrorEventArgs">
+            <summary>
+            Event arguments for device-error events in <c>IAdapter</c>,
+            e.g. <c>DeviceConnectionLost</c> or <c>DeviceConnectionError</c>
+            </summary>
+        </member>
+        <member name="F:Plugin.BLE.Abstractions.EventArgs.DeviceErrorEventArgs.ErrorMessage">
+            <summary>
+            The error message.
+            </summary>
+        </member>
+        <member name="T:Plugin.BLE.Abstractions.EventArgs.DeviceEventArgs">
+            <summary>
+            Event arguments for device events in <c>IAdapter</c>,
+            e.g. <c>DeviceAdvertised</c>, <c>DeviceDiscovered</c>, <c>DeviceConnected</c> and <c>DeviceDisconnected</c>
+            </summary>
+        </member>
+        <member name="F:Plugin.BLE.Abstractions.EventArgs.DeviceEventArgs.Device">
+            <summary>
+            The device.
+            </summary>
+        </member>
+        <member name="T:Plugin.BLE.Abstractions.Exceptions.CharacteristicReadException">
+            <summary>
+            An exception that is thrown whenever the reading of a characteristic value failed.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.Exceptions.CharacteristicReadException.#ctor(System.String)">
+            <summary>
+            Constructor.
+            </summary>
+        </member>
+        <member name="T:Plugin.BLE.Abstractions.Exceptions.DeviceConnectionException">
+            <summary>
+            An exception that is thrown whenever the connection to a device fails.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.Exceptions.DeviceConnectionException.DeviceId">
+            <summary>
+            The device Id.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.Exceptions.DeviceConnectionException.DeviceName">
+            <summary>
+            The device name.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.Exceptions.DeviceConnectionException.#ctor(System.Guid,System.String,System.String)">
+            <summary>
+            Constructor.
+            </summary>
+        </member>
+        <member name="T:Plugin.BLE.Abstractions.Exceptions.DeviceDiscoverException">
+            <summary>
+            An exception that is thrown whenever a problem occurs with discovering a device.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.Exceptions.DeviceDiscoverException.#ctor">
+            <summary>
+            Default constructor.
+            </summary>
+        </member>
+        <member name="T:Plugin.BLE.Abstractions.Extensions.AdapterExtension">
+            <summary>
+            Various extensions for the <c>Adapter</c> classes.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.Extensions.AdapterExtension.StartScanningForDevicesAsync(Plugin.BLE.Abstractions.Contracts.IAdapter,System.Threading.CancellationToken)">
+            <summary>
+            Starts scanning for BLE devices.
+            </summary>
+            <param name="adapter">Target adapter.</param>
+            <param name="cancellationToken">The token to monitor for cancellation requests.</param>
+            <returns>A task that represents the asynchronous read operation. The Task will finish after the scan has ended.</returns>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.Extensions.AdapterExtension.StartScanningForDevicesAsync(Plugin.BLE.Abstractions.Contracts.IAdapter,System.Guid[],System.Threading.CancellationToken)">
+            <summary>
+            Starts scanning for BLE devices that advertise the services included in <paramref name="serviceUuids"/>.
+            </summary>
+            <param name="adapter">Target adapter.</param>
+            <param name="serviceUuids">Requested service Ids.</param>
+            <param name="cancellationToken">The token to monitor for cancellation requests. The default value is None.</param>
+            <returns>A task that represents the asynchronous read operation. The Task will finish after the scan has ended.</returns>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.Extensions.AdapterExtension.StartScanningForDevicesAsync(Plugin.BLE.Abstractions.Contracts.IAdapter,Plugin.BLE.Abstractions.ScanFilterOptions,System.Threading.CancellationToken)">
+            <summary>
+            Starts scanning for BLE devices that match the provided <paramref name="scanFilterOptions"/>.
+            </summary>
+            <param name="adapter">Target adapter.</param>
+            <param name="scanFilterOptions">Scan Filter Options for native level filtering. Some options are platform specific, see comments.</param>
+            <param name="cancellationToken">The token to monitor for cancellation requests. The default value is None.</param>
+            <returns>A task that represents the asynchronous read operation. The Task will finish after the scan has ended.</returns>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.Extensions.AdapterExtension.StartScanningForDevicesAsync(Plugin.BLE.Abstractions.Contracts.IAdapter,System.Func{Plugin.BLE.Abstractions.Contracts.IDevice,System.Boolean},System.Threading.CancellationToken)">
+            <summary>
+            Starts scanning for BLE devices that fulfill the <paramref name="deviceFilter"/>.
+            DeviceDiscovered will only be called, if <paramref name="deviceFilter"/> returns <c>true</c> for the discovered device.
+            </summary>
+            <param name="adapter">Target adapter.</param>
+            <param name="deviceFilter">Function that filters the devices.</param>
+            <param name="cancellationToken">The token to monitor for cancellation requests. The default value is None.</param>
+            <returns>A task that represents the asynchronous read operation. The Task will finish after the scan has ended.</returns>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.Extensions.AdapterExtension.DiscoverDeviceAsync(Plugin.BLE.Abstractions.Contracts.IAdapter,System.Guid,System.Threading.CancellationToken)">
+            <summary>
+            Try to discover a device with a specific device Id.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.Extensions.AdapterExtension.DiscoverDeviceAsync(Plugin.BLE.Abstractions.Contracts.IAdapter,System.Func{Plugin.BLE.Abstractions.Contracts.IDevice,System.Boolean},System.Threading.CancellationToken)">
+            <summary>
+            Try to discover a device that matches a filter function.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.Extensions.AdapterExtension.ConnectToDeviceAsync(Plugin.BLE.Abstractions.Contracts.IAdapter,Plugin.BLE.Abstractions.Contracts.IDevice,Plugin.BLE.Abstractions.ConnectParameters,System.Threading.CancellationToken)">
+            <summary>
+            Connects to the <paramref name="device"/>.
+            </summary>
+            <param name="adapter">Target adapter.</param>
+            <param name="device">Device to connect to.</param>
+            <param name="connectParameters">Connection parameters. Contains platform specific parameters needed to achieved connection. The default value is None.</param>
+            <param name="cancellationToken">The token to monitor for cancellation requests. The default value is None.</param>
+            <returns>A task that represents the asynchronous read operation. The Task will finish after the device has been connected successfuly.</returns>
+            <exception cref="T:Plugin.BLE.Abstractions.Exceptions.DeviceConnectionException">Thrown if the device connection fails.</exception>
+        </member>
+        <member name="T:Plugin.BLE.Abstractions.Extensions.GuidExtension">
+            <summary>
+            Various extensions for Guids.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.Extensions.GuidExtension.UuidFromPartial(System.Int32)">
+            <summary>
+            Create a full Guid from the Bluetooth "Assigned Number" (short version)
+            </summary>
+            <returns>a Guid of the form {00002A37-0000-1000-8000-00805f9b34fb}</returns>
+            <param name="partial">4 digit hex value, eg 0x2A37 (which is heart rate measurement)</param>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.Extensions.GuidExtension.PartialFromUuid(System.Guid)">
+            <summary>
+            Extract the Bluetooth "Assigned Number" from a Uuid 
+            </summary>
+            <returns>4 digit hex value, eg 0x2A37 (which is heart rate measurement)</returns>
+            <param name="uuid">a Guid of the form {00002A37-0000-1000-8000-00805f9b34fb}</param>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.Extensions.GuidExtension.ToHexString(System.Byte[])">
+            <summary>
+            Convert a byte array to a hex string.
+            </summary>
+        </member>
+        <member name="T:Plugin.BLE.Abstractions.KnownCharacteristic">
+            <summary>
+            Information about a known characteristic (name and ID).
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.KnownCharacteristic.Name">
+            <summary>
+            Name of the characteristic. 
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.KnownCharacteristic.Id">
+            <summary>
+            Id of the characteristic.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.KnownCharacteristic.#ctor(System.String,System.Guid)">
+            <summary>
+            Constructor.
+            </summary>
+        </member>
+        <member name="T:Plugin.BLE.Abstractions.KnownCharacteristics">
+            <summary>
+            Provides a list of known characteristics.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.KnownCharacteristics.Lookup(System.Guid)">
+            <summary>
+            Look up a known characteristic via its Id.
+            </summary>
+        </member>
+        <member name="F:Plugin.BLE.Abstractions.KnownCharacteristics.Characteristics">
+            <summary>
+            https://developer.bluetooth.org/gatt/characteristics/Pages/CharacteristicsHome.aspx
+            </summary>
+        </member>
+        <member name="T:Plugin.BLE.Abstractions.KnownDescriptor">
+            <summary>
+            Information about a known descriptor (name and ID).
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.KnownDescriptor.Name">
+            <summary>
+            Name of the descriptor. 
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.KnownDescriptor.Id">
+            <summary>
+            Id of the descriptor.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.KnownDescriptor.#ctor(System.String,System.Guid)">
+            <summary>
+            Constructor.
+            </summary>
+        </member>
+        <member name="T:Plugin.BLE.Abstractions.KnownDescriptors">
+            <summary>
+            Provides a list of known descriptors.
+            Source: https://developer.bluetooth.org/gatt/descriptors/Pages/DescriptorsHomePage.aspx
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.KnownDescriptors.Lookup(System.Guid)">
+            <summary>
+            Look up a known descriptor via its Id.
+            </summary>
+        </member>
+        <member name="T:Plugin.BLE.Abstractions.KnownService">
+            <summary>
+            Information about a known service (name and ID).
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.KnownService.Name">
+            <summary>
+            Name of the service. 
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.KnownService.Id">
+            <summary>
+            Id of the service.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.KnownService.#ctor(System.String,System.Guid)">
+            <summary>
+            Constructor.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.KnownService.ToString">
+            <summary>
+            Convert to string.
+            </summary>
+        </member>
+        <member name="T:Plugin.BLE.Abstractions.KnownServices">
+            <summary>
+            Provides a list of known services.
+            Source: https://developer.bluetooth.org/gatt/services/Pages/ServicesHome.aspx
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.KnownServices.Lookup(System.Guid)">
+            <summary>
+            Look up a known service via its Id.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.KnownServices.Services">
+            <summary>
+            The list of known services.
+            </summary>
+        </member>
+        <member name="T:Plugin.BLE.Abstractions.ServiceDataFilter">
+            <summary>
+            A scan filter for service data (including UUID and actual data).
+            Android only.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.ServiceDataFilter.ServiceDataUuid">
+            <summary>
+            The service-data UUID.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.ServiceDataFilter.ServiceData">
+            <summary>
+            The service data (as a byte array).
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.ServiceDataFilter.ServiceDataMask">
+            <summary>
+            The service-data mask (as a byte array).
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.ServiceDataFilter.#ctor(System.Guid,System.Byte[],System.Byte[])">
+            <summary>
+            Standard constructor.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.ServiceDataFilter.#ctor(System.String,System.Byte[],System.Byte[])">
+            <summary>
+            Constructor with UUID as string.
+            </summary>
+        </member>
+        <member name="T:Plugin.BLE.Abstractions.ManufacturerDataFilter">
+            <summary>
+            A scan filter for manufacturer data (including maufacturer ID and actual data).
+            Android only.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.ManufacturerDataFilter.ManufacturerId">
+            <summary>
+            The manufacturer Id.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.ManufacturerDataFilter.ManufacturerData">
+            <summary>
+            The manufacturer data (as a byte array).
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.ManufacturerDataFilter.ManufacturerDataMask">
+            <summary>
+            The manufacturer-data mask (as a byte array).
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.ManufacturerDataFilter.#ctor(System.Int32,System.Byte[],System.Byte[])">
+            <summary>
+            Constructor.
+            </summary>
+        </member>
+        <member name="T:Plugin.BLE.Abstractions.ScanFilterOptions">
+            <summary>
+            Pass one or multiple scan filters to filter the scan. Pay attention to which filters are platform specific.
+            At least one scan filter is required to enable scanning whilst the screen is off in Android.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.ScanFilterOptions.ServiceUuids">
+            <summary>
+            Android/iOS/MacOS. Filter the scan by advertised service ID(s).
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.ScanFilterOptions.ServiceDataFilters">
+            <summary>
+            Android only. Filter the scan by service data.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.ScanFilterOptions.DeviceAddresses">
+            <summary>
+            Android only. Filter the scan by device address(es)
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.ScanFilterOptions.ManufacturerDataFilters">
+            <summary>
+            Android only. Filter the scan by manufacturer data.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.ScanFilterOptions.DeviceNames">
+            <summary>
+            Android only. Filter the scan by device name(s).
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.ScanFilterOptions.HasFilter">
+            <summary>
+            Indicates whether the options include any filter at all.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.ScanFilterOptions.HasServiceIds">
+            <summary>
+            Indicates whether the options include a filter on service Ids.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.ScanFilterOptions.HasServiceData">
+            <summary>
+            Indicates whether the options include a filter on service data.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.ScanFilterOptions.HasDeviceAddresses">
+            <summary>
+            Indicates whether the options include a filter on device addresses.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.ScanFilterOptions.HasManufacturerIds">
+            <summary>
+            Indicates whether the options include a filter on manufacturer data.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.ScanFilterOptions.HasDeviceNames">
+            <summary>
+            Indicates whether the options include a filter on device names.
+            </summary>
+        </member>
+        <member name="T:Plugin.BLE.Abstractions.ServiceBase`1">
+            <summary>
+            Base class for platform-specific <c>Service</c> classes.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.ServiceBase`1.Name">
+            <summary>
+            Name of the service.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.ServiceBase`1.Id">
+            <summary>
+            Id of the Service.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.ServiceBase`1.IsPrimary">
+            <summary>
+            Indicates whether the type of service is primary or secondary.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.ServiceBase`1.Device">
+            <summary>
+            The parent device.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.ServiceBase`1.NativeService">
+            <summary>
+            The native service.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.ServiceBase`1.#ctor(Plugin.BLE.Abstractions.Contracts.IDevice,`0)">
+            <summary>
+            ServiceBase constructor.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.ServiceBase`1.GetCharacteristicsAsync">
+            <summary>
+            Gets the characteristics of the service.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.ServiceBase`1.GetCharacteristicAsync(System.Guid)">
+            <summary>
+            Gets the first characteristic with the Id <paramref name="id"/>. 
+            </summary>
+            <param name="id">The id of the searched characteristic.</param>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.ServiceBase`1.GetCharacteristicsNativeAsync">
+            <summary>
+            Native implementation of <c>GetCharacteristicsAsync</c>.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.ServiceBase`1.Dispose">
+            <summary>
+            Dispose the service.
+            </summary>
+        </member>
+        <member name="T:Plugin.BLE.Abstractions.Trace">
+            <summary>
+            Generic tracing class.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.Trace.TraceImplementation">
+            <summary>
+            The actual tracing implementation.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.Trace.Message(System.String,System.Object[])">
+            <summary>
+            Print a message via the tracing implementation.
+            </summary>
+        </member>
+        <member name="T:Plugin.BLE.Abstractions.Utils.BleCommandQueue">
+            <summary>
+            A BLE command queue.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.Utils.BleCommandQueue.CommandQueue">
+            <summary>
+            The actual queue of BLE commands.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.Utils.BleCommandQueue.#ctor">
+            <summary>
+            Default constructor.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.Utils.BleCommandQueue.EnqueueAsync``1(System.Func{System.Threading.Tasks.Task{``0}},System.Int32)">
+            <summary>
+            Enqueue a command with a given timeout.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.Utils.BleCommandQueue.CancelPending">
+            <summary>
+            Cancel all pending commands.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.Utils.BleCommandQueue.TryExecuteNext">
+            <summary>
+            Try to execute the next command in the queue.
+            </summary>
+        </member>
+        <member name="T:Plugin.BLE.Abstractions.Utils.IBleCommand">
+            <summary>
+            BLE command interface.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.Utils.IBleCommand.ExecuteAsync">
+            <summary>
+            Execute the command.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.Utils.IBleCommand.Cancel">
+            <summary>
+            Cancel the command.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.Utils.IBleCommand.IsExecuting">
+            <summary>
+            Indicates whether the command is currently executing.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.Utils.IBleCommand.TimeoutInMiliSeconds">
+            <summary>
+            Timeout of the command in milliseconds.
+            </summary>
+        </member>
+        <member name="T:Plugin.BLE.Abstractions.Utils.BleCommand`1">
+            <summary>
+            A BLE command.
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.Utils.BleCommand`1.TimeoutInMiliSeconds">
+            <summary>
+            Timeout of the command in milliseconds.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.Utils.BleCommand`1.#ctor(System.Func{System.Threading.Tasks.Task{`0}},System.Int32)">
+            <summary>
+            Constructor.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.Utils.BleCommand`1.ExecutingTask">
+            <summary>
+            The executing task.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.Utils.BleCommand`1.IsExecuting">
+            <summary>
+            Indicates whether the command is currently executing.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.Utils.BleCommand`1.ExecuteAsync">
+            <summary>
+            Execute the command.
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Abstractions.Utils.BleCommand`1.Cancel">
+            <summary>
+            Cancel the command.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.Utils.TaskBuilder.SemaphoreQueueTimeout">
+            <summary>
+            Main thread queue get semaphore timeout
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Abstractions.Utils.TaskBuilder.MainThreadInvoker">
+            <summary>
+            Platform specific main thread invocation. Useful to avoid GATT 133 errors on Android.
+            Set this to NULL in order to disable main thread queued invocations.
+            Android: already implemented and set by default
+            UWP, iOS, macOS: NULL by default - not needed, turning this on is redundant as it's already handled internaly by the platform
+            </summary>
+        </member>
+        <member name="T:Plugin.BLE.CrossBluetoothLE">
+            <summary>
+            Cross platform bluetooth LE implemenation.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.CrossBluetoothLE.Current">
+            <summary>
+            Current bluetooth LE implementation.
+            </summary>
+        </member>
+        <member name="F:Plugin.BLE.Android.Device._gatt">
+            <summary>
+            we have to keep a reference to this because Android's api is weird and requires
+            the GattServer in order to do nearly anything, including enumerating services
+            </summary>
+        </member>
+        <member name="F:Plugin.BLE.Android.Device._gattCallback">
+            <summary>
+            we also track this because of google's weird API. the gatt callback is where
+            we'll get notified when services are enumerated
+            </summary>
+        </member>
+        <member name="F:Plugin.BLE.Android.Device._connectCancellationTokenRegistration">
+            <summary>
+            the registration must be disposed to avoid disconnecting after a connection
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.Android.Device.ConnectParameters">
+            <summary>
+            the connect paramaters used when connecting to this device
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Android.Device.Disconnect">
+            <summary>
+            This method is only called by a user triggered disconnect.
+            A user will first trigger _gatt.disconnect -> which in turn will trigger _gatt.Close() via the gattCallback
+            </summary>
+        </member>
+        <member name="M:Plugin.BLE.Android.Device.CloseGatt">
+            <summary>
+            CloseGatt is called by the gattCallback in case of user disconnect or a disconnect by signal loss or a connection error.
+            Cleares all cached services.
+            </summary>
+        </member>
+        <member name="P:Plugin.BLE.BleImplementation.ShouldQueueOnMainThread">
+            <summary>
+            Set this field to force are task builder execute() actions to be invoked on the main app tread one at a time (synchronous queue)
+            </summary>
+        </member>
+        <member name="T:Plugin.BLE.Extensions.ScanModeExtension">
+            <summary>
+            See https://developer.android.com/reference/android/bluetooth/le/ScanSettings.html
+            </summary>
+        </member>
+    </members>
+</doc>

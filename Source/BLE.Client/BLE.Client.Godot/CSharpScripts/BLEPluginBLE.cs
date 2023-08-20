@@ -28,11 +28,6 @@ namespace BLEScan
             _scanCancellationToken = _scanCancellationTokenSource.Token;
         }
 
-        public override bool Configure(Node2D signalOwner)
-        {
-            return true;
-        }
-
 
         /*private void PerformScanForDevices()
         {
@@ -91,7 +86,6 @@ namespace BLEScan
                 IsScanning = IsScanning;
             }
         }
-
 
         public override async Task<int> StartScan()
         {
@@ -207,10 +201,20 @@ namespace BLEScan
             DebugMessage("CleanUpCancellationToken done");
         }
 
-        private void ConfigureBLE()
+        public override bool Configure(Node2D signalOwner)
         {
+            var result = true;
             DebugMessage("into ConfigureBLE");
-            _bluetoothManager = CrossBluetoothLE.Current;
+            try
+            {
+                _bluetoothManager = CrossBluetoothLE.Current;
+            }
+            catch (Exception e)
+            {
+                DebugMessage($"exception setting _bluetoothManager: '{e.Message}'");
+                return false;
+            }
+
             DebugMessage("got _bluetoothManager");
             if (_bluetoothManager == null)
             {
@@ -238,16 +242,19 @@ namespace BLEScan
 
             if (_bluetoothManager == null && Adapter == null)
             {
-                ShowMessage("Bluetooth and Adapter are both null");
+                DebugMessage("Bluetooth and Adapter are both null");
             }
             else if (_bluetoothManager == null)
             {
-                ShowMessage("Bluetooth is null");
+                DebugMessage("Bluetooth is null");
             }
             else if (Adapter == null)
             {
-                ShowMessage("Adapter is null");
+                DebugMessage("Adapter is null");
             }
+
+            return result;
+
         }
     }
 }
