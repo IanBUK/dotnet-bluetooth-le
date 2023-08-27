@@ -2,6 +2,8 @@
   <PropertyGroup>
     <RootNamespace>BleClientGodot</RootNamespace>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <!--<TargetFrameworks>netstandard2.0;net6.0-android</TargetFrameworks>-->
+    <BuildWithMSBuildOnMono>true</BuildWithMSBuildOnMono>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugType>full</DebugType>
@@ -39,6 +41,12 @@
     </Reference>
     <Reference Include="System.Core">
       <HintPath>System.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Java.Interop">
+      <HintPath>Java.Interop.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Android">
+      <HintPath>Mono.Android.dll</HintPath>
     </Reference>
     <Reference Include="Plugin.BLE.Abstractions">
       <HintPath>Plugin.BLE.Abstractions.dll</HintPath>

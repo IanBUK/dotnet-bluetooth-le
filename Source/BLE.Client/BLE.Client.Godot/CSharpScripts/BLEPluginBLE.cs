@@ -211,7 +211,10 @@ namespace BLEScan
             }
             catch (Exception e)
             {
-                DebugMessage($"exception setting _bluetoothManager: '{e.Message}'");
+
+                DebugMessage($"\n\n\n!!!!!\n!!!!!\n");
+                DebugMessage($"Exception type: '{e.GetType().Name}'");
+                DebugMessage($"exception setting _bluetoothManager: '{e.Message}'\n!!!!!\n!!!!!\n\n\n");
                 return false;
             }
 
